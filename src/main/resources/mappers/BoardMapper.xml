@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.boardver3.board.BoardMapper">
+    <insert id="postBoard">
+        INSERT INTO board
+        SET title = #{title}
+        , contents = #{contents}
+        , writer_id = #{writerId}
+    </insert>
+
+    <select id="getBoardList">
+        SELECT A.board_id AS boardID, A.title,  B.nm AS writerNm,
+        A.created_at AS createdAt, A.writer_id AS writerId, A.hits AS hit
+        FROM board A
+        INNER JOIN user B
+        ON A.writer_id = B.user_id
+        ORDER BY A.board_id DESC
+        LIMIT #{startIdx}, #{len}
+    </select>
+
+    <select id="getBoardOne">
+        SELECT A.board_id AS boardID, A.title, A.contents, A.hits , A.writer_id AS writerId ,
+        A.created_at AS createdAt , B.nm AS writerNm, A.updated_at AS updatedAt
+        FROM board A
+        INNER JOIN user B
+        ON A.writer_id = B.user_id
+        WHERE board_id = #{boardId}
+    </select>
+
+    <update id="putBoard">
+        UPDATE board
+        <set>
+            <if test=" title != null and title != '' ">
+                title = #{title},
+            </if>
+            <if test=" contents != null and contents != '' ">
+                contents = #{contents},
+            </if>
+        </set>
+        WHERE board_id = #{boardId}
+    </update>
+
+    <update id="patchBoardHits">
+        UPDATE board
+        SET hits = hits + 1
+        WHERE board_id = #{boardId}
+    </update>
+
+    <delete id="delBoard">
+        DELETE FROM board
+        WHERE board_id = #{boardId}
+    </delete>
+</mapper>
