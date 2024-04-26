@@ -1,9 +1,6 @@
 package com.green.boardver3.board;
 
-import com.green.boardver3.board.model.GetBoardList;
-import com.green.boardver3.board.model.GetBoardOne;
-import com.green.boardver3.board.model.GetPage;
-import com.green.boardver3.board.model.PostBoard;
+import com.green.boardver3.board.model.*;
 import com.green.boardver3.common.ResultDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +24,7 @@ public class BoardController {
     }
     @GetMapping
     public ResultDto<List<GetBoardList>> getBoardList(@ModelAttribute GetPage p){
-        List<GetBoardList> result = service.getBoardList();
+        List<GetBoardList> result = service.getBoardList(p);
 
         return ResultDto.<List<GetBoardList>>builder().
                 statusCode(HttpStatus.OK).
@@ -41,5 +38,20 @@ public class BoardController {
         return ResultDto.<GetBoardOne>builder().statusCode(HttpStatus.OK).
                 resultMsg(one == null ? "내용을 찾을 수 없습니다." : HttpStatus.OK.toString()).
                 resultData(one).build();
+    }
+    @PutMapping
+    public ResultDto<Integer> putBoard(@RequestBody PutBoard p){
+        int result = service.putBoard(p);
+
+        return ResultDto.<Integer>builder().statusCode(HttpStatus.OK).
+                resultMsg(HttpStatus.OK.toString()).
+                resultData(result).build();
+    }
+    @DeleteMapping
+    public ResultDto<Integer> delBoard(@RequestParam(name = "board_id") long p){
+        int result = service.delBoard(p);
+        return ResultDto.<Integer>builder().statusCode(HttpStatus.OK).
+                resultMsg(HttpStatus.OK.toString()).
+                resultData(result).build();
     }
 }
